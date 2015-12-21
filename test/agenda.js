@@ -448,11 +448,7 @@ describe("agenda", function () {
             });
 
             afterEach(function (done) {
-                jobs._table.getall('jobA', 'jobB', {index: 
-                    'name'}).delete().run(function (err) {
-                    if (err) return done(err);
-                    done();
-                });
+                clearJobs(done);
             });
 
             it('should cancel a job', function (done) {
@@ -546,7 +542,7 @@ describe("agenda", function () {
             var jobs = new Agenda({
                 defaultConcurrency: 1,
                 db: {
-                    address: rethinkCfg
+                    config: rethinkCfg
                 }
             });
             var jobRunInterval = 400;
@@ -1411,7 +1407,7 @@ describe("agenda", function () {
 
             });
 
-            describe('now()', function () {
+            describe.only('now()', function () {
 
                 it('Should immediately run the job', function (done) {
                     var serviceError = function (e) {
