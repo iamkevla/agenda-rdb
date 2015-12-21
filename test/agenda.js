@@ -225,6 +225,7 @@ describe("agenda", function () {
                         }, jobTimeout);
 
                     });
+                    after(clearJobs);
                 });
                 describe('with array of names specified', function () {
                     it('returns array of jobs', function () {
@@ -273,10 +274,10 @@ describe("agenda", function () {
                                 'data.type': 'active',
                                 'data.userId': '123'
                             }).schedule("now").save(function (err, job2) {
-                                expect(job1.attrs.nextRunAt.toISOString()).not.to.equal(job2.attrs.nextRunAt.toISOString())
-                                mongo.collection('agendaJobs').find({
+                                expect(job1.attrs.nextRunAt.toISOString()).not.to.equal(job2.attrs.nextRunAt.toISOString());
+                                r.table('agendaJobs').filter({
                                     name: 'unique job'
-                                }).toArray(function (err, j) {
+                                }).run(function (err, j) {
                                     expect(j).to.have.length(1);
                                     done();
                                 });
@@ -305,8 +306,8 @@ describe("agenda", function () {
                             }, {
                                 insertOnly: true
                             }).schedule("now").save(function (err, job2) {
-                                expect(job1.attrs.nextRunAt.toISOString()).to.equal(job2.attrs.nextRunAt.toISOString())
-                                mongo.collection('agendaJobs').find({
+                                expect(job1.attrs.nextRunAt.toISOString()).to.equal(job2.attrs.nextRunAt.toISOString());
+                                r.table('agendaJobs').find({
                                     name: 'unique job'
                                 }).toArray(function (err, j) {
                                     expect(j).to.have.length(1);
@@ -344,7 +345,7 @@ describe("agenda", function () {
                                 'data.userId': '123',
                                 nextRunAt: time2
                             }).schedule(time).save(function (err, job) {
-                                mongo.collection('agendaJobs').find({
+                                r.table('agendaJobs').find({
                                     name: 'unique job'
                                 }).toArray(function (err, j) {
                                     expect(j).to.have.length(2);
@@ -447,11 +448,8 @@ describe("agenda", function () {
             });
 
             afterEach(function (done) {
-                jobs._collection.remove({
-                    name: {
-                        $in: ['jobA', 'jobB']
-                    }
-                }, function (err) {
+                jobs._table.getall('jobA', 'jobB', {index: 
+                    'name'}).delete().run(function (err) {
                     if (err) return done(err);
                     done();
                 });
@@ -548,7 +546,7 @@ describe("agenda", function () {
             var jobs = new Agenda({
                 defaultConcurrency: 1,
                 db: {
-                    address: mongoCfg
+                    address: rethinkCfg
                 }
             });
             var jobRunInterval = 400;
@@ -779,9 +777,9 @@ describe("agenda", function () {
                     if (err) return done(err);
                     job.remove(function (err) {
                         if (err) return done(err);
-                        mongo.collection('agendaJobs').find({
+                            r.table('agendaJobs').filter({
                             _id: job.attrs._id
-                        }).toArray(function (err, j) {
+                        }).run(function (err, j) {
                             expect(j).to.have.length(0);
                             done();
                         });
@@ -1255,7 +1253,7 @@ describe("agenda", function () {
 
                     var startService = function () {
                         var serverPath = path.join(__dirname, 'fixtures', 'agenda-instance.js');
-                        var n = cp.fork(serverPath, [mongoCfg, 'daily']);
+                        var n = cp.fork(serverPath, [rethinkCfg, 'daily']);
 
                         n.on('message', receiveMessage);
                         n.on('error', serviceError);
@@ -1292,7 +1290,7 @@ describe("agenda", function () {
 
 
                     var serverPath = path.join(__dirname, 'fixtures', 'agenda-instance.js');
-                    var n = cp.fork(serverPath, [mongoCfg, 'daily-array']);
+                    var n = cp.fork(serverPath, [rethinkCfg, 'daily-array']);
 
                     n.on('message', receiveMessage);
                     n.on('error', serviceError);
@@ -1345,7 +1343,7 @@ describe("agenda", function () {
 
                     var startService = function () {
                         var serverPath = path.join(__dirname, 'fixtures', 'agenda-instance.js');
-                        var n = cp.fork(serverPath, [mongoCfg, 'define-future-job']);
+                        var n = cp.fork(serverPath, [rethinkCfg, 'define-future-job']);
 
                         n.on('message', receiveMessage);
                         n.on('error', serviceError);
@@ -1367,7 +1365,7 @@ describe("agenda", function () {
 
                     var startService = function () {
                         var serverPath = path.join(__dirname, 'fixtures', 'agenda-instance.js');
-                        var n = cp.fork(serverPath, [mongoCfg, 'define-past-due-job']);
+                        var n = cp.fork(serverPath, [rethinkCfg, 'define-past-due-job']);
 
                         n.on('message', receiveMessage);
                         n.on('error', serviceError);
@@ -1405,7 +1403,7 @@ describe("agenda", function () {
 
 
                     var serverPath = path.join(__dirname, 'fixtures', 'agenda-instance.js');
-                    var n = cp.fork(serverPath, [mongoCfg, 'schedule-array']);
+                    var n = cp.fork(serverPath, [rethinkCfg, 'schedule-array']);
 
                     n.on('message', receiveMessage);
                     n.on('error', serviceError);
@@ -1426,7 +1424,7 @@ describe("agenda", function () {
                     };
 
                     var serverPath = path.join(__dirname, 'fixtures', 'agenda-instance.js');
-                    var n = cp.fork(serverPath, [mongoCfg, 'now']);
+                    var n = cp.fork(serverPath, [rethinkCfg, 'now']);
 
                     n.on('message', receiveMessage);
                     n.on('error', serviceError);
