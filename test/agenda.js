@@ -1,7 +1,11 @@
 /* globals before, describe, it, beforeEach, after, afterEach */
 var rethinkHost = process.env.RETHINKDB_HOST || 'localhost',
     rethinkPort = process.env.RETHINKDB_PORT || '28015',
-    rethinkCfg = 'rethinkdb://' + rethinkHost + ':' + rethinkPort + '/agenda-test';
+    rethinkCfg = {
+        host: rethinkHost,
+        port: rethinkPort,
+        db: 'agenda_test'
+    };
 
 var expect = require('expect.js'),
     path = require('path'),
@@ -9,18 +13,15 @@ var expect = require('expect.js'),
     Agenda = require(path.join('..', 'index.js')),
     Job = require(path.join('..', 'lib', 'job.js'));
 
-var r = require('rethinkdbdash')({
-    host: rethinkHost,
-    port: rethinkPort,
-    database: 'agenda-test'
-});
+var r = require('rethinkdbdash')(rethinkCfg);
+
 
 
 // create agenda instances
 var jobs = null;
 
 function clearJobs(done) {
-    mongo.collection('agendaJobs').remove({}, done);
+    r.table('agendaJobs').delete().run(done);
 }
 
 // Slow timeouts for travis
@@ -38,37 +39,28 @@ function failOnError(err) {
 }
 
 describe("agenda", function () {
+    
 
     before(function (done) {
         
-        console.log(rethinkCfg)
-
         jobs = new Agenda({
             db: {
-                address: rethinkCfg
+                config: rethinkCfg
             }
         }, function (err) {
-
-            MongoClient.connect(mongoCfg, function (error, db) {
-                mongo = db;
-                setTimeout(function () {
-                    clearJobs(function () {
-                        jobs.define('someJob', jobProcessor);
-                        jobs.define('send email', jobProcessor);
-                        jobs.define('some job', jobProcessor);
-                        jobs.define(jobType, jobProcessor);
-                        done();
-                    });
-                }, 50);
-            });
-
-        });
-    });
-
-    after(function (done) {
+            
+          
         setTimeout(function () {
-            mongo.close(done);
+            clearJobs(function () {
+                jobs.define('someJob', jobProcessor);
+                jobs.define('send email', jobProcessor);
+                jobs.define('some job', jobProcessor);
+                jobs.define(jobType, jobProcessor);
+                done();
+            });
         }, 50);
+ 
+        });
     });
 
 
@@ -80,24 +72,27 @@ describe("agenda", function () {
         describe('configuration methods', function () {
             it('sets the _db directly when passed as an option', function () {
                 var agenda = new Agenda({
-                    mongo: mongo
+                    rethinkdb: r,
+                    db: {
+                        table: 'agendaJobs'
+                    }
                 });
-                expect(agenda._mdb.databaseName).to.equal('agenda-test');
+                expect(typeof agenda).to.equal('object');
             });
         });
 
         describe('configuration methods', function () {
 
-            describe('mongo', function () {
+            describe('rethink', function () {
                 it('sets the _db directly', function () {
                     var agenda = new Agenda();
-                    agenda.mongo(mongo);
-                    expect(agenda._mdb.databaseName).to.equal('agenda-test');
+                    agenda.rethink(r, 'agendaJobs');
+                    expect(typeof agenda).to.equal('object');
                 });
 
                 it('returns itself', function () {
                     var agenda = new Agenda();
-                    expect(agenda.mongo(mongo)).to.be(agenda);
+                    expect(agenda.rethink(r)).to.be(agenda);
                 });
             });
 
