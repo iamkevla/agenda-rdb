@@ -6,13 +6,11 @@ agenda:
   volumes:
     - ./:/usr/src/app
   environment:
-    - MONGODB_HOST=mongodb
+    - RETHINKDB_HOST=rethinkdb
   links:
     - mongodb
 
-mongodb:
-  image: mongo:latest
+rethinkdb:
+  image: rethinkdb:latest
   ports:
-    - "27017"
-  command:
-    - --storageEngine=wiredTiger
+    - "28015:28015"

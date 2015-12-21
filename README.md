@@ -1,16 +1,13 @@
-# Agenda
-[![Build Status](https://api.travis-ci.org/rschmukler/agenda.svg)](http://travis-ci.org/rschmukler/agenda)
-[![Dependency Status](https://david-dm.org/rschmukler/agenda.svg)](https://david-dm.org/rschmukler/agenda)
-[![devDependency Status](https://david-dm.org/rschmukler/agenda/dev-status.svg)](https://david-dm.org/rschmukler/agenda#info=devDependencies)
-[![Code Climate](https://d3s6mut3hikguw.cloudfront.net/github/rschmukler/agenda.svg)](https://codeclimate.com/github/rschmukler/agenda/badges)
-[![Coverage Status](https://coveralls.io/repos/rschmukler/agenda/badge.svg)](https://coveralls.io/r/rschmukler/agenda)
+# Agenda-rdb
 
 Agenda is a light-weight job scheduling library for Node.js.
+
+Same as https://github.com/rschmukler/agenda excellent repo but ported db to rethindb instead of mongo
 
 It offers:
 
 - Minimal overhead. Agenda aims to keep its code base small.
-- Mongo backed persistance layer.
+- rethinkdb backed persistance layer.
 - Scheduling with configurable priority, concurrency, and repeating
 - Scheduling via cron or human readable syntax.
 - Event backed job queue that you can hook into.
@@ -23,24 +20,24 @@ Install via NPM
 
     npm install agenda
 
-You will also need a working [mongo](http://www.mongodb.org/) database (2.6+) to point it to.
+You will also need a working [rethinkdb](http://rethinkdb.com/) database (2.2+) to point it to.
 
 # Example Usage
 
 ```js
 
-var mongoConnectionString = "mongodb://127.0.0.1/agenda";
+var rethinkdbConnectionString = "http://127.0.0.1:28015/agenda";
 
-var agenda = new Agenda({db: {address: mongoConnectionString}});
+var agenda = new Agenda({db: {url: rethinkdbConnectionString}});
 
 // or override the default collection name:
-// var agenda = new Agenda({db: {address: mongoConnectionString, collection: "jobCollectionName"}});
+// var agenda = new Agenda({db: {url: rethinkdbConnectionString, collection: "jobCollectionName"}});
 
 // or pass additional connection options:
-// var agenda = new Agenda({db: {address: mongoConnectionString, collection: "jobCollectionName", options: {server:{auto_reconnect:true}}});
+// var agenda = new Agenda({db: {url: rethinkdbConnectionString, collection: "jobCollectionName", options: {server:{auto_reconnect:true}}});
 
-// or pass in an existing mongodb-native MongoClient instance
-// var agenda = new Agenda({mongo: myMongoClient});
+// or pass in an existing rethinkdb-native rethinkdbClient instance
+// var agenda = new Agenda({rethinkdb: myrethinkdbClient});
 
 agenda.define('delete old users', function(job, done) {
   User.remove({lastLogIn: { $lt: twoDaysAgo }}, done);
@@ -143,9 +140,9 @@ var agenda = new Agenda({db: { address: 'localhost:27017/agenda-test', collectio
 
 Agenda will emit a `ready` event (see [Agenda Events](#agenda-events)) when properly connected to the database and it is safe to start using Agenda.
 
-### mongo(mongoClientInstance)
+### rethinkdb(rethinkdbClientInstance)
 
-Use an existing mongodb-native MongoClient instance. This can help consolidate connections to a
+Use an existing rethinkdb-native RethinkdbClient instance. This can help consolidate connections to a
 database. You can instead use `.database` to have agenda handle connecting for
 you.
 
@@ -168,7 +165,7 @@ function ignoreErrors
 You can also specify it during instantiation.
 
 ```js
-var agenda = new Agenda({mongo: mongoClientInstance});
+var agenda = new Agenda({rethinkdb: RethinkdbClientInstance});
 ```
 
 ### name(name)
