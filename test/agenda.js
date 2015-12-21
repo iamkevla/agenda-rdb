@@ -1,21 +1,19 @@
 /* globals before, describe, it, beforeEach, after, afterEach */
 var rethinkHost = process.env.RETHINKDB_HOST || 'localhost',
-    rethinkPort = process.env.RETHINKDB_PORT || '27017',
+    rethinkPort = process.env.RETHINKDB_PORT || '28015',
     rethinkCfg = 'rethinkdb://' + rethinkHost + ':' + rethinkPort + '/agenda-test';
 
 var expect = require('expect.js'),
     path = require('path'),
     cp = require('child_process'),
-    Agenda = require(path.join('..', 'index.js')); //,
-//Job = require(path.join('..', 'lib', 'job.js'));
+    Agenda = require(path.join('..', 'index.js')),
+    Job = require(path.join('..', 'lib', 'job.js'));
 
 var r = require('rethinkdbdash')({
     host: rethinkHost,
     port: rethinkPort,
     database: 'agenda-test'
 });
-
-process.exit();
 
 
 // create agenda instances
@@ -42,10 +40,12 @@ function failOnError(err) {
 describe("agenda", function () {
 
     before(function (done) {
+        
+        console.log(rethinkCfg)
 
         jobs = new Agenda({
             db: {
-                address: mongoCfg
+                address: rethinkCfg
             }
         }, function (err) {
 
