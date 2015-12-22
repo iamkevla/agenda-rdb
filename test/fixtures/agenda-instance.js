@@ -5,7 +5,7 @@ var path = require('path'),
     Agenda = require( path.join(__dirname, '..', '..', 'index.js' ) ),
     addTests = require( path.join(__dirname, 'addTests.js') );
 
-var agenda = new Agenda({ db: { config: connStr } }, function(err, collection) {
+var agenda = new Agenda({ db: { address: connStr } }, function(err, collection) {
 
 	tests.forEach(function(test) {
 	  addTests[test](agenda);

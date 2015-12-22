@@ -1,11 +1,7 @@
 /* globals before, describe, it, beforeEach, after, afterEach */
 var rethinkHost = process.env.RETHINKDB_HOST || 'localhost',
     rethinkPort = process.env.RETHINKDB_PORT || '28015',
-    rethinkCfg = {
-        host: rethinkHost,
-        port: rethinkPort,
-        db: 'agenda_test'
-    };
+    rethinkCfg = 'http://' + rethinkHost + ':' + rethinkPort + '/agenda_test';
 
 var expect = require('expect.js'),
     path = require('path'),
@@ -13,7 +9,11 @@ var expect = require('expect.js'),
     Agenda = require(path.join('..', 'index.js')),
     Job = require(path.join('..', 'lib', 'job.js'));
 
-var r = require('rethinkdbdash')(rethinkCfg);
+var r = require('rethinkdbdash')({
+    host: rethinkHost,
+    port: rethinkPort,
+    db: 'agenda_test'
+});
 
 
 
@@ -45,7 +45,7 @@ describe("agenda", function () {
         
         jobs = new Agenda({
             db: {
-                config: rethinkCfg
+                address: rethinkCfg
             }
         }, function (err) {
             
@@ -542,7 +542,7 @@ describe("agenda", function () {
             var jobs = new Agenda({
                 defaultConcurrency: 1,
                 db: {
-                    config: rethinkCfg
+                    address: rethinkCfg
                 }
             });
             var jobRunInterval = 400;
@@ -1407,7 +1407,7 @@ describe("agenda", function () {
 
             });
 
-            describe.only('now()', function () {
+            describe('now()', function () {
 
                 it('Should immediately run the job', function (done) {
                     var serviceError = function (e) {
