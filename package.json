@@ -4,7 +4,7 @@
   "description": "Light weight job scheduler for Node.js",
   "main": "index.js",
   "scripts": {
-    "test": "mocha",
+    "test": "mocha -b",
     "blanket": {
       "pattern": "lib",
       "data-cover-never": "node_modules"

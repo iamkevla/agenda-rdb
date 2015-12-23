@@ -263,16 +263,20 @@ describe("agenda", function () {
                             userId: '123',
                             'other': true
                         }).unique({
-                            'data.type': 'active',
-                            'data.userId': '123'
+                            data: {
+                                type: 'active',
+                                userId: '123'
+                            }
                         }).schedule("now").save(function (err, job1) {
                             jobs.create('unique job', {
                                 type: 'active',
                                 userId: '123',
                                 'other': false
                             }).unique({
-                                'data.type': 'active',
-                                'data.userId': '123'
+                                data: {
+                                    type: 'active',
+                                    userId: '123'
+                                }
                             }).schedule("now").save(function (err, job2) {
                                 expect(job1.attrs.nextRunAt.toISOString()).not.to.equal(job2.attrs.nextRunAt.toISOString());
                                 r.table('agendaJobs').filter({
