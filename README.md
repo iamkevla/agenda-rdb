@@ -31,16 +31,16 @@ var rethinkdbConnectionString = "http://127.0.0.1:28015/agenda";
 var agenda = new Agenda({db: {url: rethinkdbConnectionString}});
 
 // or override the default collection name:
-// var agenda = new Agenda({db: {url: rethinkdbConnectionString, collection: "jobCollectionName"}});
+// var agenda = new Agenda({db: {url: rethinkdbConnectionString, table: "jobTableName"}});
 
 // or pass additional connection options:
-// var agenda = new Agenda({db: {url: rethinkdbConnectionString, collection: "jobCollectionName", options: {server:{auto_reconnect:true}}});
+// var agenda = new Agenda({db: {url: rethinkdbConnectionString, table: "jobTableName", options: {server:{auto_reconnect:true}}});
 
 // or pass in an existing rethinkdb-native rethinkdbClient instance
 // var agenda = new Agenda({rethinkdb: myrethinkdbClient});
 
 agenda.define('delete old users', function(job, done) {
-  User.remove({lastLogIn: { $lt: twoDaysAgo }}, done);
+  User.remove({lastLogIn: { lt: twoDaysAgo }}, done);
 });
 
 agenda.on('ready', function() {
@@ -123,19 +123,19 @@ agenda.processEvery('3 days and 4 hours');
 agenda.processEvery('3 days, 4 hours and 36 seconds');
 ```
 
-### database(url, [collectionName])
+### database(url, [tableName])
 
-Specifies the database at the `url` specified. If no collection name is given,
+Specifies the database at the `url` specified. If no table name is given,
 `agendaJobs` is used.
 
 ```js
-agenda.database('localhost:27017/agenda-test', 'agendaJobs');
+agenda.database('localhost:28015/agenda-test', 'agendaJobs');
 ```
 
 You can also specify it during instantiation.
 
 ```js
-var agenda = new Agenda({db: { address: 'localhost:27017/agenda-test', collection: 'agendaJobs' }});
+var agenda = new Agenda({db: { address: 'localhost:28015/agenda-test', table: 'agendaJobs' }});
 ```
 
 Agenda will emit a `ready` event (see [Agenda Events](#agenda-events)) when properly connected to the database and it is safe to start using Agenda.
@@ -148,7 +148,7 @@ you.
 
 
 
-Please note that this must be a *collection*. Also, you will want to run the following
+Please note that this must be a *table*. Also, you will want to run the following
 afterwards to ensure the database has the proper indexes:
 
 ```js
@@ -263,8 +263,8 @@ var agenda = new Agenda({defaultLockLifetime: 10000});
 
 An instance of an agenda will emit the following events:
 
-- `ready` - called when Agenda mongo connection is successfully opened
-- `error` - called when Agenda mongo connection process has thrown an error
+- `ready` - called when Agenda rethinkDB connection is successfully opened
+- `error` - called when Agenda rethinkDB connection process has thrown an error
 
 ```js
 agenda.on('ready', function() {
@@ -421,10 +421,10 @@ job.save(function(err) {
 ## Managing Jobs
 
 
-### jobs(mongodb-native query)
+### jobs(rethinkdb-native query)
 
-Lets you query all of the jobs in the agenda job's database. This is a full [mongodb-native](https://github.com/mongodb/node-mongodb-native)
-`find` query. See mongodb-native's documentation for details.
+Lets you query all of the jobs in the agenda job's database. This is a full [rethinkdb-native](http://rethinkdb.com/api/javascript/filter/)
+`find` query. See rethinkdb-native's documentation for details.
 
 ```js
 agenda.jobs({name: 'printAnalyticsReport'}, function(err, jobs) {
@@ -432,7 +432,7 @@ agenda.jobs({name: 'printAnalyticsReport'}, function(err, jobs) {
 });
 ```
 
-### cancel(mongodb-native query, cb)
+### cancel(rethinkdb-native query, cb)
 
 Cancels any jobs matching the passed mongodb-native query, and removes them from the database.
 
@@ -682,10 +682,6 @@ choose how they would like to use it. That being said, you can check out the
 [example project structure](#example-project-structure) below.
 
 
-### Can I Donate?
-
-Thanks! I'm flattered, but it's really not necessary. If you really want to, you can find my [gittip here](https://www.gittip.com/rschmukler/).
-
 ### Web Interface?
 
 Agenda itself does not have a web interface built in. That being said, there is a stand-alone web interface in the form of [agenda-ui](https://github.com/moudy/agenda-ui).
@@ -694,20 +690,6 @@ Screenshot:
 
 ![agenda-ui interface](https://raw.githubusercontent.com/moudy/agenda-ui/screenshot/agenda-ui-screenshot.png)
 
-### Mongo vs Redis
-
-The decision to use Mongo instead of Redis is intentional. Redis is often used for
-non-essential data (such as sessions) and without configuration doesn't
-guarantee the same level of persistence as Mongo (should the server need to be
-restarted/crash).
-
-Agenda decides to focus on persistence without requiring special configuration
-of Redis (thereby degrading the performance of the Redis server on non-critical
-data, such as sessions).
-
-Ultimately if enough people want a Redis driver instead of Mongo, I will write
-one. (Please open an issue requesting it). For now, Agenda decided to focus on
-guaranteed persistence.
 
 ### Spawning / forking processes.
 
@@ -887,20 +869,15 @@ JOB_TYPES=video-processing,image-processing node worker.js
 Fire up an instance that processes video-processing/image-processing jobs. Good
 for a heavy hitting server.
 
-# Acknowledgements
 
-Agenda has some great community members that help a great deal.
-
-- [@droppedoncaprica](http://github.com/droppedoncaprica)
-- [@nwkeeley](http://github.com/nwkeeley)
-- [@liamdon](http://github.com/liamdon)
-- [@loris](http://github.com/loris)
-
+# Credits 
+All credits should go to Ryan Schmukler <ryan@slingingcode.com> for his amazing repo for which this is wholly based on
+(https://github.com/rschmukler/agenda) 
 
 # License
 (The MIT License)
 
-Copyright (c) 2013 Ryan Schmukler <ryan@slingingcode.com>
+Copyright (c) 2015 Kevin Vlahos <kevin.vlahos@krackas.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the 'Software'), to deal in
