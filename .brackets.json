@@ -1,0 +1,11 @@
+{
+  "defaultExtension": "js",
+  "language": {
+    "javascript": {
+      "linting.prefer": ["JSHint", "JSCS"],
+      "linting.usePreferredOnly": true
+    }
+  },
+  "spaceUnits": 2,
+  "useTabChar": false
+}
