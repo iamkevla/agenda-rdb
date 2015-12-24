@@ -96,7 +96,7 @@ describe('Integration Tests', function() {
                 startService();
             });
 
-            it.only('Should properly run jobs when defined via an array', function(done) {
+            it('Should properly run jobs when defined via an array', function(done) {
                 var ran1 = false,
                     ran2 = true,
                     doneCalled = false;
