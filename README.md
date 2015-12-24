@@ -18,7 +18,7 @@ It offers:
 
 Install via NPM
 
-    npm install agenda
+    npm install agenda-rdb
 
 You will also need a working [rethinkdb](http://rethinkdb.com/) database (2.2+) to point it to.
 
