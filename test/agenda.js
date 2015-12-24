@@ -25,7 +25,7 @@ function clearJobs(done) {
 }
 
 // Slow timeouts for travis
-var jobTimeout = process.env.TRAVIS ? 1500 : 300;
+var jobTimeout = process.env.TRAVIS ? 15000 : 300;
 
 
 var jobType = 'do work';
@@ -197,43 +197,7 @@ describe('agenda', function() {
                 });
             });
 
-            describe('every', function() {
-                describe('with a job name specified', function() {
-                    it('returns a job', function() {
-                        expect(jobs.every('5 minutes', 'send email')).to.be.a(Job);
-                    });
-                    it('sets the repeatEvery', function() {
-                        expect(jobs.every('5 seconds', 'send email').attrs.repeatInterval).to.be('5 seconds');
-                    });
-                    it('sets the agenda', function() {
-                        expect(jobs.every('5 seconds', 'send email').agenda).to.be(jobs);
-                    });
-                    it('should update a job that was previously scheduled with `every`', function(done) {
-                        jobs.every(10, 'shouldBeSingleJob');
-                        setTimeout(function() {
-                            jobs.every(20, 'shouldBeSingleJob');
-                        }, 10);
 
-                        // Give the saves a little time to propagate
-                        setTimeout(function() {
-                            jobs.jobs({
-                                name: 'shouldBeSingleJob'
-                            }, function(err, res) {
-                                expect(res).to.have.length(1);
-                                done();
-                            });
-                        }, jobTimeout);
-
-                    });
-                    after(clearJobs);
-                });
-                describe('with array of names specified', function() {
-                    it('returns array of jobs', function() {
-                        expect(jobs.every('5 minutes', ['send email', 'some job'])).to.be.an('array');
-                    });
-                });
-                after(clearJobs);
-            });
 
             describe('schedule', function() {
                 describe('with a job name specified', function() {
@@ -962,6 +926,7 @@ describe('agenda', function() {
                 var job = new Job();
                 expect(job.disable()).to.be(job);
             });
+          after(clearJobs);
         });
 
         describe('save', function() {
@@ -1001,6 +966,7 @@ describe('agenda', function() {
                 });
                 expect(job.save()).to.be(job);
             });
+            after(clearJobs);
         });
 
         describe('start/stop', function() {
@@ -1158,88 +1124,6 @@ describe('agenda', function() {
             after(clearJobs);
         });
 
-        describe('job lock', function() {
-
-            it('runs job after a lock has expired', function(done) {
-                var startCounter = 0;
-
-                jobs.define('lock job', {
-                    lockLifetime: 50
-                }, function(job, cb) {
-                    startCounter++;
-
-                    if (startCounter !== 1) {
-                        expect(startCounter).to.be(2);
-                        jobs.stop(done);
-                    }
-                });
-
-                expect(jobs._definitions['lock job'].lockLifetime).to.be(50);
-
-                jobs.defaultConcurrency(100);
-                jobs.processEvery(10);
-                jobs.every('0.02 seconds', 'lock job');
-                jobs.stop();
-                jobs.start();
-            });
-
-        });
-
-        describe.only('every running', function() {
-            before(function(done) {
-                jobs.defaultConcurrency(1);
-                jobs.processEvery(5);
-
-                jobs.stop(done);
-
-            });
-            it('should run the same job multiple times', function(done) {
-                var counter = 0;
-
-                jobs.define('everyRunTest1', function(job, cb) {
-                    if (counter < 2) {
-                        counter++;
-                    }
-                    cb();
-                });
-
-                jobs.every(10, 'everyRunTest1');
-
-                jobs.start();
-
-                setTimeout(function() {
-                    jobs.jobs({
-                        name: 'everyRunTest1'
-                    }, function(err, res) {
-                        expect(counter).to.be(2);
-                        jobs.stop(done);
-                    });
-                }, jobTimeout);
-            });
-
-            it('should reuse the same job on multiple runs', function(done) {
-                var counter = 0;
-
-                jobs.define('everyRunTest2', function(job, cb) {
-                    if (counter < 2) {
-                        counter++;
-                    }
-                    cb();
-                });
-                jobs.every(10, 'everyRunTest2');
-
-                jobs.start();
-
-                setTimeout(function() {
-                    jobs.jobs({
-                        name: 'everyRunTest2'
-                    }, function(err, res) {
-                        expect(res).to.have.length(1);
-                        jobs.stop(done);
-                    });
-                }, jobTimeout);
-            });
-        });
 
         describe('Integration Tests', function() {
 
@@ -1332,6 +1216,7 @@ describe('agenda', function() {
                         });
                     }, jobTimeout);
                 });
+              after(clearJobs);
 
             });
 
@@ -1420,7 +1305,7 @@ describe('agenda', function() {
                     n.on('error', serviceError);
                 });
 
-              after(clearJobs);
+                after(clearJobs);
 
             });
 
@@ -1444,7 +1329,7 @@ describe('agenda', function() {
 
                 });
 
-              after(clearJobs);
+                after(clearJobs);
 
             });
         });
