@@ -96,7 +96,7 @@ describe('Integration Tests', function() {
                 startService();
             });
 
-            it('Should properly run jobs when defined via an array', function(done) {
+            it.only('Should properly run jobs when defined via an array', function(done) {
                 var ran1 = false,
                     ran2 = true,
                     doneCalled = false;
@@ -106,6 +106,7 @@ describe('Integration Tests', function() {
                 };
                 var receiveMessage = function(msg) {
                     if (msg === 'test1-ran') {
+                        console.log('test1-ran')
                         ran1 = true;
                         if (!!ran1 && !!ran2 && !doneCalled) {
                             doneCalled = true;
@@ -114,6 +115,7 @@ describe('Integration Tests', function() {
                         }
                     } else if (msg === 'test2-ran') {
                         ran2 = true;
+                        console.log('test2-ran')
                         if (!!ran1 && !!ran2 && !doneCalled) {
                             doneCalled = true;
                             done();
@@ -122,12 +124,16 @@ describe('Integration Tests', function() {
                     } else return done(new Error('Jobs did not run!'));
                 };
 
+                var startService = function() {
 
-                var serverPath = path.join(__dirname, 'fixtures', 'agenda-instance.js');
-                var n = cp.fork(serverPath, [rethinkCfg, 'daily-array']);
+                    var serverPath = path.join(__dirname, 'fixtures', 'agenda-instance.js');
+                    var n = cp.fork(serverPath, [rethinkCfg, 'daily-array']);
 
-                n.on('message', receiveMessage);
-                n.on('error', serviceError);
+                    n.on('message', receiveMessage);
+                    n.on('error', serviceError);
+                };
+
+                startService();
             });
 
             it('should not run if job is disabled', function(done) {

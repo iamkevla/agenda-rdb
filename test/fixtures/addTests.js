@@ -20,7 +20,6 @@ module.exports = {
       done();
     });
 
-
     agenda.every('one day', [ 'daily test 1', 'daily test 2' ]);
   },
   "define-future-job" : function(agenda) {

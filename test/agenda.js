@@ -424,6 +424,7 @@ describe('agenda', function() {
             });
 
             it('should cancel a job', function(done) {
+
                 jobs.jobs({
                     name: 'jobA'
                 }, function(err, j) {
