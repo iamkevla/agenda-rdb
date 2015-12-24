@@ -155,7 +155,7 @@ describe('Integration Tests', function() {
                     });
                 }, jobTimeout);
             });
-            after(clearJobs);
+            afterEach(clearJobs);
 
         });
 
