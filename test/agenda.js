@@ -491,8 +491,8 @@ describe('agenda', function() {
                     }, function(err) {
                         if (err) return done(err);
                         jobs.jobs(function(job) {
-                        return r.expr(['jobA', 'jobB']).contains(job('name'));
-                    }, function(err, j) {
+                            return r.expr(['jobA', 'jobB']).contains(job('name'));
+                        }, function(err, j) {
                             if (err) return done(err);
                             expect(j).to.have.length(0);
                             done();
@@ -611,18 +611,24 @@ describe('agenda', function() {
             var job = new Job();
             it('sets the unique property', function() {
                 job.unique({
-                    'data.type': 'active',
-                    'data.userId': '123'
+                    data: {
+                        type: 'active',
+                        userId: '123'
+                    }
                 });
                 expect(JSON.stringify(job.attrs.unique)).to.be(JSON.stringify({
-                    'data.type': 'active',
-                    'data.userId': '123'
+                    data: {
+                        type: 'active',
+                        userId: '123'
+                    }
                 }));
             });
             it('returns the job', function() {
                 expect(job.unique({
-                    'data.type': 'active',
-                    'data.userId': '123'
+                    data: {
+                        type: 'active',
+                        userId: '123'
+                    }
                 })).to.be(job);
             });
         });
@@ -1047,8 +1053,8 @@ describe('agenda', function() {
                             name: 'longRunningJob'
                         }).run().then(function(job) {
 
-                          expect(job.lockedAt).to.be(undefined);
-                          done();
+                            expect(job.lockedAt).to.be(undefined);
+                            done();
                         });
                     });
                 }, jobTimeout);
@@ -1146,7 +1152,7 @@ describe('agenda', function() {
                     });
                     job.run();
                 });
-              after(clearJobs);
+                after(clearJobs);
 
             });
             after(clearJobs);
@@ -1414,6 +1420,8 @@ describe('agenda', function() {
                     n.on('error', serviceError);
                 });
 
+              after(clearJobs);
+
             });
 
             describe('now()', function() {
@@ -1435,6 +1443,8 @@ describe('agenda', function() {
                     n.on('error', serviceError);
 
                 });
+
+              after(clearJobs);
 
             });
         });
