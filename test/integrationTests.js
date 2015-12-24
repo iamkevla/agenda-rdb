@@ -99,14 +99,14 @@ describe('Integration Tests', function() {
             it('Should properly run jobs when defined via an array', function(done) {
                 var ran1 = false,
                     ran2 = true,
-                    doneCalled = false;
+                    doneCalled = false,
+                    n;
 
                 var serviceError = function(e) {
                     done(e);
                 };
                 var receiveMessage = function(msg) {
                     if (msg === 'test1-ran') {
-                        console.log('test1-ran')
                         ran1 = true;
                         if (!!ran1 && !!ran2 && !doneCalled) {
                             doneCalled = true;
@@ -115,7 +115,6 @@ describe('Integration Tests', function() {
                         }
                     } else if (msg === 'test2-ran') {
                         ran2 = true;
-                        console.log('test2-ran')
                         if (!!ran1 && !!ran2 && !doneCalled) {
                             doneCalled = true;
                             done();
@@ -127,7 +126,7 @@ describe('Integration Tests', function() {
                 var startService = function() {
 
                     var serverPath = path.join(__dirname, 'fixtures', 'agenda-instance.js');
-                    var n = cp.fork(serverPath, [rethinkCfg, 'daily-array']);
+                    n = cp.fork(serverPath, [rethinkCfg, 'daily-array']);
 
                     n.on('message', receiveMessage);
                     n.on('error', serviceError);
