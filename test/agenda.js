@@ -385,7 +385,6 @@ describe('agenda', function() {
                     });
                     jobs.now('immediateJob');
                     jobs.start();
-                    done();
                 });
 
                 after(clearJobs);
@@ -482,24 +481,18 @@ describe('agenda', function() {
             });
 
             it('should cancel multiple jobs', function(done) {
-                jobs.jobs({
-                    name: {
-                        $in: ['jobA', 'jobB']
-                    }
+                jobs.jobs(function(job) {
+                    return r.expr(['jobA', 'jobB']).contains(job('name'));
                 }, function(err, j) {
                     if (err) return done(err);
                     expect(j).to.have.length(3);
-                    jobs.cancel({
-                        name: {
-                            $in: ['jobA', 'jobB']
-                        }
+                    jobs.cancel(function(job) {
+                        return r.expr(['jobA', 'jobB']).contains(job('name'));
                     }, function(err) {
                         if (err) return done(err);
-                        jobs.jobs({
-                            name: {
-                                $in: ['jobA', 'jobB']
-                            }
-                        }, function(err, j) {
+                        jobs.jobs(function(job) {
+                        return r.expr(['jobA', 'jobB']).contains(job('name'));
+                    }, function(err, j) {
                             if (err) return done(err);
                             expect(j).to.have.length(0);
                             done();
@@ -1039,19 +1032,23 @@ describe('agenda', function() {
             });
 
             it('clears locks on stop', function(done) {
+
                 jobs.define('longRunningJob', function(job, cb) {
                     //Job never finishes
                 });
                 jobs.every('10 seconds', 'longRunningJob');
                 jobs.processEvery('1 second');
                 jobs.start();
+
                 setTimeout(function() {
+
                     jobs.stop(function(err, res) {
-                        jobs._collection.findOne({
+                        jobs._table.filter({
                             name: 'longRunningJob'
-                        }, function(err, job) {
-                            expect(job.lockedAt).to.be(null);
-                            done();
+                        }).run().then(function(job) {
+
+                          expect(job.lockedAt).to.be(undefined);
+                          done();
                         });
                     });
                 }, jobTimeout);

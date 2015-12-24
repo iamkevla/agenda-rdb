@@ -4,7 +4,7 @@
   "description": "Light weight job scheduler for Node.js",
   "main": "index.js",
   "scripts": {
-    "test": "mocha -b",
+    "test": "mocha",
     "blanket": {
       "pattern": "lib",
       "data-cover-never": "node_modules"
@@ -22,7 +22,7 @@
     "scheduler",
     "runner"
   ],
-  "author": "Ryan Schmukler <ryan@slingingcode.com> (http://slingingcode.com/)",
+  "author": "Kevin Vlahos",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/iamkevla/agenda-rdb/issues"

@@ -2,7 +2,7 @@
 
 Agenda is a light-weight job scheduling library for Node.js.
 
-Same as https://github.com/rschmukler/agenda excellent repo but ported db to rethindb instead of mongo
+Same as https://github.com/rschmukler/agenda excellent repo but ported db to rethinkdb instead of mongo
 
 It offers:
 
