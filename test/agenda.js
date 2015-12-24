@@ -1146,7 +1146,10 @@ describe('agenda', function() {
                     });
                     job.run();
                 });
+              after(clearJobs);
+
             });
+            after(clearJobs);
         });
 
         describe('job lock', function() {
@@ -1176,7 +1179,7 @@ describe('agenda', function() {
 
         });
 
-        describe('every running', function() {
+        describe.only('every running', function() {
             before(function(done) {
                 jobs.defaultConcurrency(1);
                 jobs.processEvery(5);
