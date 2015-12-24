@@ -39,7 +39,7 @@ function failOnError(err) {
 }
 
 
-describe('agenda', function() {
+describe('every', function() {
 
 
     before(function(done) {

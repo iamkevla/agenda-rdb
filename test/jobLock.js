@@ -39,7 +39,7 @@ function failOnError(err) {
 }
 
 
-describe('agenda', function() {
+describe('jobLock', function() {
 
 
     before(function(done) {
