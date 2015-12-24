@@ -28,13 +28,13 @@ You will also need a working [rethinkdb](http://rethinkdb.com/) database (2.2+) 
 
 var rethinkdbConnectionString = "http://127.0.0.1:28015/agenda";
 
-var agenda = new Agenda({db: {url: rethinkdbConnectionString}});
+var agenda = new Agenda({db: {addres: rethinkdbConnectionString}});
 
 // or override the default collection name:
-// var agenda = new Agenda({db: {url: rethinkdbConnectionString, table: "jobTableName"}});
+// var agenda = new Agenda({db: {address: rethinkdbConnectionString, table: "jobTableName"}});
 
 // or pass additional connection options:
-// var agenda = new Agenda({db: {url: rethinkdbConnectionString, table: "jobTableName", options: {server:{auto_reconnect:true}}});
+// var agenda = new Agenda({db: {address: rethinkdbConnectionString, table: "jobTableName", options: {server:{auto_reconnect:true}}});
 
 // or pass in an existing rethinkdb-native rethinkdbClient instance
 // var agenda = new Agenda({rethinkdb: myrethinkdbClient});
