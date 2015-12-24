@@ -8,7 +8,7 @@ agenda:
   environment:
     - RETHINKDB_HOST=rethinkdb
   links:
-    - mongodb
+    - rethinkdb
 
 rethinkdb:
   image: rethinkdb:latest

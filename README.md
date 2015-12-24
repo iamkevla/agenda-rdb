@@ -11,7 +11,6 @@ It offers:
 - Scheduling with configurable priority, concurrency, and repeating
 - Scheduling via cron or human readable syntax.
 - Event backed job queue that you can hook into.
-- Optional standalone web-interface (see [agenda-ui](https://github.com/moudy/agenda-ui))
 
 
 # Installation
@@ -28,7 +27,7 @@ You will also need a working [rethinkdb](http://rethinkdb.com/) database (2.2+) 
 
 var rethinkdbConnectionString = "http://127.0.0.1:28015/agenda";
 
-var agenda = new Agenda({db: {addres: rethinkdbConnectionString}});
+var agenda = new Agenda({db: {address: rethinkdbConnectionString}});
 
 // or override the default collection name:
 // var agenda = new Agenda({db: {address: rethinkdbConnectionString, table: "jobTableName"}});
