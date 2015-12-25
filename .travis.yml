@@ -14,6 +14,7 @@ before_script:
   - sudo apt-get install rethinkdb
   - sleep 15
   - rethinkdb --version
+  - rethinkdb
 after_script: make test-coveralls
 before_install:
   # Travis uses an ancient GCC
