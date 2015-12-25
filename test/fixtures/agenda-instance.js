@@ -26,6 +26,6 @@ var agenda = new Agenda({
     setTimeout(function() {
         process.send('notRan');
         process.exit(0);
-    }, 400);
+    }, 1200);
 
 });

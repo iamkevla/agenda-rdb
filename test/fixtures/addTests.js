@@ -21,6 +21,8 @@ module.exports = {
     });
 
     agenda.every('one day', [ 'daily test 1', 'daily test 2' ]);
+    agenda.processEvery('1 second');
+
   },
   "define-future-job" : function(agenda) {
     var future = new Date();

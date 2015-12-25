@@ -9,11 +9,7 @@ var expect = require('expect.js'),
     Agenda = require(path.join('..', 'index.js')),
     Job = require(path.join('..', 'lib', 'job.js'));
 
-var r = require('rethinkdbdash')({
-    host: rethinkHost,
-    port: rethinkPort,
-    db: 'agenda_test'
-});
+var r = require('./fixtures/connection');
 
 
 
@@ -40,13 +36,14 @@ function failOnError(err) {
 
 
 describe('Integration Tests', function() {
-
+    this.timeout(5000);
 
     before(function(done) {
 
         jobs = new Agenda({
+            rethinkdb: r,
             db: {
-                address: rethinkCfg
+                table: 'agendaJobs'
             }
         }, function(err) {
 
@@ -105,17 +102,18 @@ describe('Integration Tests', function() {
                 var serviceError = function(e) {
                     done(e);
                 };
+
                 var receiveMessage = function(msg) {
                     if (msg === 'test1-ran') {
                         ran1 = true;
-                        if (!!ran1 && !!ran2 && !doneCalled) {
+                        if ( !! ran1 && !! ran2 && !doneCalled) {
                             doneCalled = true;
                             done();
                             return n.send('exit');
                         }
                     } else if (msg === 'test2-ran') {
                         ran2 = true;
-                        if (!!ran1 && !!ran2 && !doneCalled) {
+                        if ( !! ran1 && !! ran2 && !doneCalled) {
                             doneCalled = true;
                             done();
                             return n.send('exit');
@@ -145,11 +143,9 @@ describe('Integration Tests', function() {
 
                 var job = jobs.every(10, 'everyDisabledTest');
 
+                job.disable().save();
+
                 jobs.start();
-
-                job.disable();
-
-                job.save();
 
                 setTimeout(function() {
                     jobs.jobs({
@@ -226,14 +222,14 @@ describe('Integration Tests', function() {
 
                     if (msg === 'test1-ran') {
                         ran1 = true;
-                        if (!!ran1 && !!ran2 && !doneCalled) {
+                        if ( !! ran1 && !! ran2 && !doneCalled) {
                             doneCalled = true;
                             done();
                             return n.send('exit');
                         }
                     } else if (msg === 'test2-ran') {
                         ran2 = true;
-                        if (!!ran1 && !!ran2 && !doneCalled) {
+                        if ( !! ran1 && !! ran2 && !doneCalled) {
                             doneCalled = true;
                             done();
                             return n.send('exit');

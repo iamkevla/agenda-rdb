@@ -1,19 +1,11 @@
 /* globals before, describe, it, beforeEach, after, afterEach */
-var rethinkHost = process.env.RETHINKDB_HOST || 'localhost',
-    rethinkPort = process.env.RETHINKDB_PORT || '28015',
-    rethinkCfg = 'http://' + rethinkHost + ':' + rethinkPort + '/agenda_test';
-
 var expect = require('expect.js'),
     path = require('path'),
     cp = require('child_process'),
     Agenda = require(path.join('..', 'index.js')),
     Job = require(path.join('..', 'lib', 'job.js'));
 
-var r = require('rethinkdbdash')({
-    host: rethinkHost,
-    port: rethinkPort,
-    db: 'agenda_test'
-});
+var r = require('./fixtures/connection');
 
 
 
@@ -45,8 +37,9 @@ describe('every', function() {
     before(function(done) {
 
         jobs = new Agenda({
+            rethinkdb: r,
             db: {
-                address: rethinkCfg
+                table: 'agendaJobs'
             }
         }, function(err) {
 
