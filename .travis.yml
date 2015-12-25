@@ -12,9 +12,9 @@ before_script:
   - wget -qO- https://download.rethinkdb.com/apt/pubkey.gpg | sudo apt-key add -
   - sudo apt-get update
   - sudo apt-get install rethinkdb
-  - sleep 15
   - rethinkdb --version
-  - rethinkdb
+  - rethinkdb --daemon
+  - sleep 15
 after_script: make test-coveralls
 before_install:
   # Travis uses an ancient GCC
