@@ -106,14 +106,14 @@ describe('Integration Tests', function() {
                 var receiveMessage = function(msg) {
                     if (msg === 'test1-ran') {
                         ran1 = true;
-                        if ( !! ran1 && !! ran2 && !doneCalled) {
+                        if (!!ran1 && !!ran2 && !doneCalled) {
                             doneCalled = true;
                             done();
                             return n.send('exit');
                         }
                     } else if (msg === 'test2-ran') {
                         ran2 = true;
-                        if ( !! ran1 && !! ran2 && !doneCalled) {
+                        if (!!ran1 && !!ran2 && !doneCalled) {
                             doneCalled = true;
                             done();
                             return n.send('exit');
@@ -222,14 +222,14 @@ describe('Integration Tests', function() {
 
                     if (msg === 'test1-ran') {
                         ran1 = true;
-                        if ( !! ran1 && !! ran2 && !doneCalled) {
+                        if (!!ran1 && !!ran2 && !doneCalled) {
                             doneCalled = true;
                             done();
                             return n.send('exit');
                         }
                     } else if (msg === 'test2-ran') {
                         ran2 = true;
-                        if ( !! ran1 && !! ran2 && !doneCalled) {
+                        if (!!ran1 && !!ran2 && !doneCalled) {
                             doneCalled = true;
                             done();
                             return n.send('exit');
