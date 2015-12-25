@@ -521,7 +521,7 @@ describe('agenda', function() {
                 if (lastRunAt) {
                     var timeSinceLastRun = new Date() - lastRunAt;
 
-                    if (timeSinceLastRun < jobRunInterval - 50 || timeSinceLastRun > jobRunInterval + 150) {
+                    if (timeSinceLastRun < jobRunInterval - 50 || timeSinceLastRun > jobRunInterval + 300) {
                         throw 'INVALID Job Execution Time ' + timeSinceLastRun;
                     }
                 }

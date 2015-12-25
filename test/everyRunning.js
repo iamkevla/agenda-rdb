@@ -59,7 +59,7 @@ describe('everyRunning', function() {
 
     describe('every running', function() {
 
-        this.timeout(30000);
+        console.log(this.timeout)
         before(function(done) {
             jobs.defaultConcurrency(1);
             jobs.processEvery(5);
@@ -103,17 +103,22 @@ describe('everyRunning', function() {
             });
             jobs.every(10, 'everyRunTest2');
 
-            jobs.start();
-
             setTimeout(function() {
-                jobs.jobs({
-                    name: 'everyRunTest2'
-                }, function(err, res) {
-                    expect(res).to.have.length(1);
-                    jobs.stop(done);
-                });
-            }, jobTimeout);
+
+              jobs.start();
+
+              setTimeout(function() {
+                  jobs.jobs({
+                      name: 'everyRunTest2'
+                  }, function(err, res) {
+                      expect(res).to.have.length(1);
+                      jobs.stop(done);
+                  });
+              }, jobTimeout);
+
+            }, 0);
         });
+        afterEach(clearJobs);
     });
 
 });
