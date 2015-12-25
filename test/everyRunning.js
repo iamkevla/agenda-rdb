@@ -58,6 +58,7 @@ describe('everyRunning', function() {
     });
 
     describe('every running', function() {
+
         this.timeout(30000);
         before(function(done) {
             jobs.defaultConcurrency(1);
