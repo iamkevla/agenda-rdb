@@ -65,6 +65,7 @@ describe('everyRunning', function() {
             jobs.processEvery(5);
             jobs.stop(done);
         });
+
         it('should run the same job multiple times', function(done) {
             var counter = 0;
 
@@ -74,6 +75,7 @@ describe('everyRunning', function() {
                 }
                 cb();
             });
+
 
             jobs.every(10, 'everyRunTest1');
 
@@ -86,7 +88,8 @@ describe('everyRunning', function() {
                     expect(counter).to.be(2);
                     jobs.stop(done);
                 });
-            }, jobTimeout);
+            }, 1200);
+
         });
 
         it('should reuse the same job on multiple runs', function(done) {

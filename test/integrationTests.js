@@ -135,26 +135,33 @@ describe('Integration Tests', function() {
 
             it('should not run if job is disabled', function(done) {
                 var counter = 0;
-
                 jobs.define('everyDisabledTest', function(job, cb) {
                     counter++;
                     cb();
                 });
 
-                var job = jobs.every(10, 'everyDisabledTest');
+                var job = jobs.every('1 second', 'everyDisabledTest');
 
-                job.disable().save();
-
-                jobs.start();
-
+              //need to let the id of job to be saved by using event loop
                 setTimeout(function() {
-                    jobs.jobs({
-                        name: 'everyDisabledTest'
-                    }, function(err, res) {
-                        expect(counter).to.be(0);
-                        jobs.stop(done);
-                    });
-                }, jobTimeout);
+
+                  job.disable();
+                  job.save(function() {
+                      jobs.start();
+
+                      setTimeout(function() {
+                          jobs.jobs({
+                              name: 'everyDisabledTest'
+                          }, function(err, res) {
+                              expect(counter).to.be(0);
+                              jobs.stop(done);
+                          });
+                      }, jobTimeout);
+
+                  });
+
+                }, 50);
+
             });
             afterEach(clearJobs);
 
