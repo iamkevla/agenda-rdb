@@ -57,9 +57,10 @@ describe('every.js', function() {
                 expect(jobs.every('5 seconds', 'send email').attrs.repeatInterval).to.be('5 seconds');
             });
 
-            it('sets the agenda', function() {
+            it('sets the agenda', function(done) {
                 jobs.every('5 seconds', 'send email', function(err, Job) {
                   expect(Job.agenda).to.be(jobs);
+                  jobs.stop(done);
                 });
             });
 
@@ -84,9 +85,10 @@ describe('every.js', function() {
         });
 
         describe('with array of names specified', function() {
-          it('returns array of jobs', function() {
+          it('returns array of jobs', function(done) {
             jobs.every('5 minutes', ['send email', 'some job'], function(err, Job) {
               expect(Job).to.be.an('array');
+              jobs.stop(done);
             });
           });
         });
