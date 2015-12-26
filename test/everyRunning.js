@@ -18,7 +18,7 @@ var jobTimeout = process.env.TRAVIS ? 15000 : 300;
 
 
 
-describe.only('everyRunning', function() {
+describe('everyRunning', function() {
 
 
     before(function(done) {
