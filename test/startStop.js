@@ -2,12 +2,10 @@
 
 var expect = require('expect.js'),
     path = require('path'),
-    cp = require('child_process'),
     Agenda = require(path.join('..', 'index.js')),
     Job = require(path.join('..', 'lib', 'job.js'));
 
 var r = require('./fixtures/connection');
-
 
 
 // create agenda instances
@@ -20,9 +18,6 @@ function clearJobs(done) {
 // Slow timeouts for travis
 var jobTimeout = process.env.TRAVIS ? 15000 : 300;
 
-
-var jobType = 'do work';
-var jobProcessor = function(job) {};
 
 
 function failOnError(err) {
@@ -46,13 +41,7 @@ describe('startStop', function() {
 
 
             setTimeout(function() {
-                clearJobs(function() {
-                    jobs.define('someJob', jobProcessor);
-                    jobs.define('send email', jobProcessor);
-                    jobs.define('some job', jobProcessor);
-                    jobs.define(jobType, jobProcessor);
-                    done();
-                });
+                clearJobs(done);
             }, 50);
 
         });
@@ -60,7 +49,7 @@ describe('startStop', function() {
 
     describe('start/stop', function() {
         it('starts/stops the job queue', function(done) {
-            var stopped = false
+            var stopped = false;
             jobs.define('jobQueueTest', function jobQueueTest(job, cb) {
                 jobs.stop(function() {
                     if (stopped === false) {
@@ -154,7 +143,9 @@ describe('startStop', function() {
                     name: 'jobQueueTest'
                 });
 
-                job.run();
+                setTimeout(function() {
+                  job.run();
+                }, 0);
 
             });
 
@@ -218,8 +209,6 @@ describe('startStop', function() {
                 });
                 job.run();
             });
-
-            afterEach(clearJobs)
 
 
         });

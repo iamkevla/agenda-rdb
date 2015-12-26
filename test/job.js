@@ -57,6 +57,8 @@ describe('job.js', function() {
         });
     });
 
+    after(clearJobs);
+
 
     describe('Job', function() {
         describe('repeatAt', function() {
@@ -378,10 +380,6 @@ describe('job.js', function() {
                 });
                 expect(job.save()).to.be(job);
             });
-            after(clearJobs);
         });
-
-
     });
-
 });
