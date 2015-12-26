@@ -19,15 +19,7 @@ function clearJobs(done) {
 var jobTimeout = process.env.TRAVIS ? 15000 : 300;
 
 
-var jobType = 'do work';
 var jobProcessor = function(job) {};
-
-
-function failOnError(err) {
-    if (err) {
-        throw err;
-    }
-}
 
 
 describe('every.js', function() {
@@ -89,7 +81,6 @@ describe('every.js', function() {
                 }, jobTimeout);
 
             });
-            after(clearJobs);
         });
 
         describe('with array of names specified', function() {
