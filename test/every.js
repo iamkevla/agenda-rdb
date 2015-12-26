@@ -91,12 +91,14 @@ describe('every.js', function() {
             });
             after(clearJobs);
         });
+
         describe('with array of names specified', function() {
-            it('returns array of jobs', function() {
-                expect(jobs.every('5 minutes', ['send email', 'some job'])).to.be.an('array');
+          it('returns array of jobs', function() {
+            jobs.every('5 minutes', ['send email', 'some job'], function(err, Job) {
+              expect(Job).to.be.an('array');
             });
+          });
         });
-        after(clearJobs);
     });
 
 });
