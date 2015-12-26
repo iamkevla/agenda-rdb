@@ -4,15 +4,22 @@
   "description": "Light weight job scheduler for Node.js",
   "main": "index.js",
   "scripts": {
-    "test": "mocha",
+    "test": "mocha"
+  },
+  "config": {
     "blanket": {
-      "pattern": "lib",
-      "data-cover-never": "node_modules"
+     "pattern": "lib/*",
+      "data-cover-never": [
+        "node_modules", "test"
+      ],
+      "data-cover-reporter-options": {
+        "shortnames": true
+      }
     }
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/iamkevla/agenda-rdb"
+    "url": "git://github.com/iamkevla/agenda-rdb.git"
   },
   "keywords": [
     "job",
