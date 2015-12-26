@@ -18,7 +18,7 @@ var jobTimeout = process.env.TRAVIS ? 15000 : 300;
 
 
 
-describe('everyRunning', function() {
+describe.only('everyRunning', function() {
 
 
     before(function(done) {
@@ -59,9 +59,7 @@ describe('everyRunning', function() {
             });
 
 
-            jobs.every(10, 'everyRunTest1');
-
-            setTimeout(function() {
+            jobs.every(10, 'everyRunTest1', function(err, Job) {
 
               jobs.start();
 
@@ -87,10 +85,7 @@ describe('everyRunning', function() {
                 }
                 cb();
             });
-            jobs.every(10, 'everyRunTest2');
-
-            // use the event loop to make sure Jobs is saved
-            setTimeout(function() {
+            jobs.every(10, 'everyRunTest2', function() {
 
               jobs.start();
 
@@ -103,7 +98,8 @@ describe('everyRunning', function() {
                   });
               }, jobTimeout);
 
-            }, 0);
+            });
+
         });
 
     });
