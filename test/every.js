@@ -31,7 +31,7 @@ function failOnError(err) {
 }
 
 
-describe('every', function() {
+describe('every.js', function() {
 
 
     before(function(done) {
@@ -70,10 +70,11 @@ describe('every', function() {
                 expect(jobs.every('5 seconds', 'send email').agenda).to.be(jobs);
             });
             it('should update a job that was previously scheduled with `every`', function(done) {
-                jobs.every(10, 'shouldBeSingleJob');
-                setTimeout(function() {
+                jobs.every(10, 'shouldBeSingleJob', function() {
+                  setTimeout(function() {
                     jobs.every(20, 'shouldBeSingleJob');
-                }, 10);
+                  }, 10);
+                });
 
                 // Give the saves a little time to propagate
                 setTimeout(function() {

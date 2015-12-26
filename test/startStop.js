@@ -133,18 +133,16 @@ describe('startStop', function() {
 
             it('emits complete event', function(done) {
 
-                jobs.once('complete', function(j) {
-                    expect(job.attrs.id.toString()).to.be(j.attrs.id.toString());
-                    done();
-                });
-
                 var job = new Job({
                     agenda: jobs,
                     name: 'jobQueueTest'
                 });
 
                 setTimeout(function() {
-                  job.run();
+                    job.run(function(err, j) {
+                        expect(job.attrs.id.toString()).to.be(j.attrs.id.toString());
+                        done();
+                    });
                 }, 0);
 
             });
