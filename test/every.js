@@ -1,7 +1,6 @@
 /* globals before, describe, it, beforeEach, after, afterEach */
 var expect = require('expect.js'),
     path = require('path'),
-    cp = require('child_process'),
     Agenda = require(path.join('..', 'index.js')),
     Job = require(path.join('..', 'lib', 'job.js'));
 
@@ -43,13 +42,10 @@ describe('every.js', function() {
             }
         }, function(err) {
 
-
-            setTimeout(function() {
+          setTimeout(function() {
                 clearJobs(function() {
-                    jobs.define('someJob', jobProcessor);
                     jobs.define('send email', jobProcessor);
                     jobs.define('some job', jobProcessor);
-                    jobs.define(jobType, jobProcessor);
                     done();
                 });
             }, 50);
@@ -60,15 +56,21 @@ describe('every.js', function() {
 
     describe('every', function() {
         describe('with a job name specified', function() {
+
             it('returns a job', function() {
                 expect(jobs.every('5 minutes', 'send email')).to.be.a(Job);
             });
+
             it('sets the repeatEvery', function() {
                 expect(jobs.every('5 seconds', 'send email').attrs.repeatInterval).to.be('5 seconds');
             });
+
             it('sets the agenda', function() {
-                expect(jobs.every('5 seconds', 'send email').agenda).to.be(jobs);
+                jobs.every('5 seconds', 'send email', function(err, Job) {
+                  expect(Job.agenda).to.be(jobs);
+                });
             });
+
             it('should update a job that was previously scheduled with `every`', function(done) {
                 jobs.every(10, 'shouldBeSingleJob', function() {
                   setTimeout(function() {

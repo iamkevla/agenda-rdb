@@ -343,10 +343,12 @@ describe('agenda', function() {
                         expect(job.isRunning()).to.be(true);
                         setTimeout(function() {
                             jobs.stop(done);
-                        }, 500);
+                        }, 50);
                     });
-                    jobs.now('immediateJob');
-                    jobs.start();
+                    jobs.now('immediateJob', function() {
+                      jobs.start();
+                    });
+
 
                 });
 
