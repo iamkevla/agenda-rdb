@@ -16,7 +16,7 @@ function clearJobs(done) {
 }
 
 // Slow timeouts for travis
-var jobTimeout = process.env.TRAVIS ? 15000 : 300;
+var jobTimeout = process.env.TRAVIS ? 1500 : 300;
 
 
 
