@@ -1,4 +1,9 @@
 # Agenda-rdb
+[![Build Status](https://api.travis-ci.org/iamkevla/agenda-rdb.svg)](http://travis-ci.org/iamkevla/agenda-rdb)
+[![Dependency Status](https://david-dm.org/iamkevla/agenda-rdb.svg)](https://david-dm.org/iamkevla/agenda-rdb)
+[![devDependency Status](https://david-dm.org/iamkevla/agenda-rdb/dev-status.svg)](https://david-dm.org/iamkevla/agenda-rdb#info=devDependencies)
+[![Code Climate](https://d3s6mut3hikguw.cloudfront.net/github/iamkevla/agenda-rdb.svg)](https://codeclimate.com/github/iamkevla/agenda-rdb/badges)
+[![Coverage Status](https://coveralls.io/repos/iamkevla/agenda-rdb/badge.svg)](https://coveralls.io/r/iamkevla/agenda-rdb)
 
 Agenda is a light-weight job scheduling library for Node.js.
 
