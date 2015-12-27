@@ -686,15 +686,6 @@ choose how they would like to use it. That being said, you can check out the
 [example project structure](#example-project-structure) below.
 
 
-### Web Interface?
-
-Agenda itself does not have a web interface built in. That being said, there is a stand-alone web interface in the form of [agenda-ui](https://github.com/moudy/agenda-ui).
-
-Screenshot:
-
-![agenda-ui interface](https://raw.githubusercontent.com/moudy/agenda-ui/screenshot/agenda-ui-screenshot.png)
-
-
 ### Spawning / forking processes.
 
 Ultimately Agenda can work from a single job queue across multiple machines, node processes, or forks. If you are interested in having more than one worker, [Bars3s](http://github.com/bars3s) has written up a fantastic example of how one might do it:
@@ -881,7 +872,7 @@ All credits should go to Ryan Schmukler <ryan@slingingcode.com> for his amazing 
 # License
 (The MIT License)
 
-Copyright (c) 2015 Kevin Vlahos <kevin.vlahos@krackas.com>
+Copyright (c) 2013 Ryan Schmukler <ryan@slingingcode.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the 'Software'), to deal in
