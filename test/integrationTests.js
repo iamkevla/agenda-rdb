@@ -24,19 +24,10 @@ function clearJobs(done) {
 var jobTimeout = process.env.TRAVIS ? 1500 : 300;
 
 
-var jobType = 'do work';
-var jobProcessor = function(job) {};
 
-
-function failOnError(err) {
-    if (err) {
-        throw err;
-    }
-}
 
 
 describe('Integration Tests', function() {
-    this.timeout(5000);
 
     before(function(done) {
 
@@ -49,13 +40,7 @@ describe('Integration Tests', function() {
 
 
             setTimeout(function() {
-                clearJobs(function() {
-                    jobs.define('someJob', jobProcessor);
-                    jobs.define('send email', jobProcessor);
-                    jobs.define('some job', jobProcessor);
-                    jobs.define(jobType, jobProcessor);
-                    done();
-                });
+                clearJobs(done);
             }, 50);
 
         });
@@ -163,7 +148,6 @@ describe('Integration Tests', function() {
                 }, 50);
 
             });
-            afterEach(clearJobs);
 
         });
 
@@ -252,7 +236,6 @@ describe('Integration Tests', function() {
                 n.on('error', serviceError);
             });
 
-            after(clearJobs);
 
         });
 
@@ -276,7 +259,6 @@ describe('Integration Tests', function() {
 
             });
 
-            after(clearJobs);
 
         });
     });
