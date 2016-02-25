@@ -14,7 +14,11 @@ var r = require('./fixtures/connection');
 
 
 // create agenda instances
-var jobs = null;
+var jobs = new Agenda({
+    db: {
+        address: rethinkCfg
+    }
+});
 
 function clearJobs(done) {
     r.table('agendaJobs').delete().run(done);
@@ -37,30 +41,18 @@ function failOnError(err) {
 describe('agenda', function() {
 
 
-    before(function(done) {
-
-        jobs = new Agenda({
-            db: {
-                address: rethinkCfg
-            }
-        }, function(err) {
-
-
-            setTimeout(function() {
-                clearJobs(function() {
-                    jobs.define('someJob', jobProcessor);
-                    jobs.define('send email', jobProcessor);
-                    jobs.define('some job', jobProcessor);
-                    jobs.define(jobType, jobProcessor);
-                    done();
-                });
-            }, 50);
-
+    beforeEach(function(done) {
+        clearJobs(function() {
+            jobs.define('someJob', jobProcessor);
+            jobs.define('send email', jobProcessor);
+            jobs.define('some job', jobProcessor);
+            jobs.define(jobType, jobProcessor);
+            done();
         });
     });
+    
 
-
-    describe('Agenda', function() {
+    describe.only('Agenda', function() {
         it('sets a default processEvery', function() {
             expect(jobs._processEvery).to.be(5000);
         });
@@ -129,6 +121,28 @@ describe('agenda', function() {
                     expect(jobs.defaultConcurrency(5)).to.be(jobs);
                 });
             });
+            
+            describe('lockLimit', function(){
+                it('sets the locklimit', function(){
+                    jobs.lockLimit(10);
+                    expect(jobs._lockLimit).to.be(10);
+                });
+                it('returns itself', function(){
+                    expect(jobs.lockLimit(10)).to.be(jobs);
+                });
+            });
+            
+            describe('defultLockLimit', function(){
+                it('sets the defaultLocklimit', function(){
+                    jobs.defaultLockLimit(1);
+                    expect(jobs._defaultLockLimit).to.be(1);
+                });
+                it('returns itself', function(){
+                    expect(jobs.defaultLockLimit(5)).to.be(jobs);
+                });
+            })
+            
+            
             describe('defaultLockLifetime', function() {
                 it('returns itself', function() {
                     expect(jobs.defaultLockLifetime(1000)).to.be(jobs);
@@ -181,6 +195,10 @@ describe('agenda', function() {
                 it('sets the default concurrency for the job', function() {
                     expect(jobs._definitions.someJob).to.have.property('concurrency', 5);
                 });
+                
+                it('sets the default lockLimit for the job', function(){
+                    expect(jobs._definitions.someJob).to.have.property('lockLimit', 5);
+                });
 
                 it('sets the default priority for the job', function() {
                     expect(jobs._definitions.someJob).to.have.property('priority', 0);
@@ -192,8 +210,7 @@ describe('agenda', function() {
                     expect(jobs._definitions.highPriority).to.have.property('priority', 10);
                 });
             });
-
-
+            
 
             describe('schedule', function() {
                 describe('with a job name specified', function() {
@@ -215,7 +232,7 @@ describe('agenda', function() {
 
             describe('unique', function() {
 
-                describe('should demonstrate unique contraint', function(done) {
+                describe('should demonstrate unique contraint', function() {
 
                     it('should modify one job when unique matches', function(done) {
                         jobs.create('unique job', {
@@ -285,11 +302,11 @@ describe('agenda', function() {
                         });
                     });
 
-                    after(clearJobs);
+                    
 
                 });
 
-                describe('should demonstrate non-unique contraint', function(done) {
+                describe('should demonstrate non-unique contraint', function() {
 
                     it('should create two jobs when unique doesn\t match', function(done) {
                         var time = new Date(Date.now() + 1000 * 60 * 3);
@@ -323,7 +340,7 @@ describe('agenda', function() {
                         });
 
                     });
-                    after(clearJobs);
+                    //after(clearJobs);
 
                 });
 
@@ -398,7 +415,7 @@ describe('agenda', function() {
                 it('persists job to the database', function(done) {
                     var job = jobs.create('someJob', {});
                     job.save(function(err, job) {
-                        expect(job.attrs.id).to.be.ok();
+                        expect(job.attrs._id).to.be.ok();
                         clearJobs(done);
                     });
                 });

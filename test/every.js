@@ -57,11 +57,8 @@ describe('every.js', function() {
                 expect(jobs.every('5 seconds', 'send email').attrs.repeatInterval).to.be('5 seconds');
             });
 
-            it('sets the agenda', function(done) {
-                jobs.every('5 seconds', 'send email', function(err, Job) {
-                  expect(Job.agenda).to.be(jobs);
-                  jobs.stop(done);
-                });
+            it('sets the agenda', function() {
+                expect(jobs.every('5 seconds', 'send email').agenda).to.be(jobs);
             });
 
             it('should update a job that was previously scheduled with `every`', function(done) {
