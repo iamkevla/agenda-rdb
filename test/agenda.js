@@ -52,7 +52,7 @@ describe('agenda', function() {
     });
     
 
-    describe.only('Agenda', function() {
+    describe('Agenda', function() {
         it('sets a default processEvery', function() {
             expect(jobs._processEvery).to.be(5000);
         });
@@ -230,123 +230,10 @@ describe('agenda', function() {
                 after(clearJobs);
             });
 
-            describe('unique', function() {
 
-                describe('should demonstrate unique contraint', function() {
-
-                    it('should modify one job when unique matches', function(done) {
-                        jobs.create('unique job', {
-                            type: 'active',
-                            userId: '123',
-                            'other': true
-                        }).unique({
-                            data: {
-                                type: 'active',
-                                userId: '123'
-                            }
-                        }).schedule('now').save(function(err, job1) {
-                            jobs.create('unique job', {
-                                type: 'active',
-                                userId: '123',
-                                'other': false
-                            }).unique({
-                                data: {
-                                    type: 'active',
-                                    userId: '123'
-                                }
-                            }).schedule('now').save(function(err, job2) {
-                                expect(job1.attrs.nextRunAt.toISOString()).not.to.equal(job2.attrs.nextRunAt.toISOString());
-                                r.table('agendaJobs').filter({
-                                    name: 'unique job'
-                                }).run(function(err, j) {
-                                    expect(j).to.have.length(1);
-                                    done();
-                                });
-                            });
-                        });
-                    });
-
-                    it('should not modify job when unique matches and insertOnly is set to true', function(done) {
-                        jobs.create('unique job', {
-                            type: 'active',
-                            userId: '123',
-                            'other': true
-                        }).unique({
-                            data: {
-                                type: 'active',
-                                userId: '123'
-                            }
-                        }, {
-                            insertOnly: true
-                        }).schedule('now').save(function(err, job1) {
-                            jobs.create('unique job', {
-                                type: 'active',
-                                userId: '123',
-                                'other': false
-                            }).unique({
-                                data: {
-                                    type: 'active',
-                                    userId: '123'
-                                }
-                            }, {
-                                insertOnly: true
-                            }).schedule('now').save(function(err, job2) {
-                                //expect(job1.attrs.nextRunAt.toISOString()).to.equal(job2.attrs.nextRunAt.toISOString());
-                                r.table('agendaJobs').filter({
-                                    name: 'unique job'
-                                }).run(function(err, j) {
-                                    expect(j).to.have.length(1);
-                                    done();
-                                });
-                            });
-                        });
-                    });
-
-                    
-
-                });
-
-                describe('should demonstrate non-unique contraint', function() {
-
-                    it('should create two jobs when unique doesn\t match', function(done) {
-                        var time = new Date(Date.now() + 1000 * 60 * 3);
-                        var time2 = new Date(Date.now() + 1000 * 60 * 4);
-
-                        jobs.create('unique job', {
-                            type: 'active',
-                            userId: '123',
-                            'other': true
-                        }).unique({
-                            'data.type': 'active',
-                            'data.userId': '123',
-                            nextRunAt: time
-                        }).schedule(time).save(function(err, job) {
-                            jobs.create('unique job', {
-                                type: 'active',
-                                userId: '123',
-                                'other': false
-                            }).unique({
-                                'data.type': 'active',
-                                'data.userId': '123',
-                                nextRunAt: time2
-                            }).schedule(time).save(function(err, job) {
-                                r.table('agendaJobs').filter({
-                                    name: 'unique job'
-                                }).run(function(err, j) {
-                                    expect(j).to.have.length(2);
-                                    done();
-                                });
-                            });
-                        });
-
-                    });
-                    //after(clearJobs);
-
-                });
-
-            });
 
             describe('now', function() {
+                
                 it('returns a job', function() {
                     expect(jobs.now('send email')).to.be.a(Job);
                 });
@@ -369,7 +256,7 @@ describe('agenda', function() {
 
                 });
 
-                after(clearJobs);
+                //after(clearJobs);
             });
 
             describe('jobs', function() {
@@ -415,7 +302,7 @@ describe('agenda', function() {
                 it('persists job to the database', function(done) {
                     var job = jobs.create('someJob', {});
                     job.save(function(err, job) {
-                        expect(job.attrs._id).to.be.ok();
+                        expect(job.attrs.id).to.be.ok();
                         clearJobs(done);
                     });
                 });

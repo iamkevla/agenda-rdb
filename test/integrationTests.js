@@ -49,7 +49,7 @@ describe('Integration Tests', function() {
     describe('Integration Tests', function() {
 
         describe('.every()', function() {
-
+          this.timeout(15000);
             it('Should not rerun completed jobs after restart', function(done) {
                 var i = 0;
 
