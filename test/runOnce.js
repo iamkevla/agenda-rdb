@@ -55,5 +55,69 @@ describe('Once', function () {
 
     });
   });
+  
+  describe(' now just once', function () {
+    this.timeout(20000);
+
+    beforeEach(clearJobs);
+
+    it(' should schedule the job only once', function (done) {
+      var startCounter = 0;
+
+      jobs.define('lock job', {
+        lockLifetime: 50
+      }, function (job, cb) {
+        startCounter++;
+      });
+      
+      jobs.maxConcurrency(1);
+      jobs.every('00 30 08 * * 2-6', 'lock job');
+      jobs.start();
+
+      setTimeout(function () {
+        jobs.now('lock job', '');
+      }, 10);
+
+      setTimeout(function () {
+        expect(startCounter).to.be(1);
+        jobs.stop(done);
+      }, 15000);
+
+    });
+    
+  });
+    
+    describe.skip(' schedule just once', function () {
+      this.timeout(20000);
+
+      beforeEach(clearJobs);
+
+      it(' should schedule the job only once', function (done) {
+        var startCounter = 0;
+
+        jobs.define('lock job', {
+          lockLifetime: 50
+        }, function (job, cb) {
+          startCounter++;
+        });
+        
+        jobs.maxConcurrency(1);
+        jobs.every('00 30 08 * * 2-6', 'lock job');
+        jobs.start();
+
+        setTimeout(function () {
+          jobs.schedule('in 2 seconds', 'lock job', '');
+        }, 10);
+
+        setTimeout(function () {
+          expect(startCounter).to.be(1);
+          jobs.stop(done);
+        }, 15000);
+
+    });
+    
+    
+  });
+  
 
 });
