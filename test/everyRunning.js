@@ -24,10 +24,7 @@ describe('everyRunning', function() {
     before(function(done) {
 
         jobs = new Agenda({
-            rethinkdb: r,
-            db: {
-                table: 'agendaJobs'
-            }
+            rethinkdb: r
         }, function(err) {
 
 

@@ -13,9 +13,7 @@ var r = require('./fixtures/connection');
 
 // create agenda instances
 var jobs = new Agenda({
-  db: {
-    address: rethinkCfg
-  }
+  rethinkdb: r
 });
 
 function clearJobs(done) {

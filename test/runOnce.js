@@ -8,10 +8,7 @@ var r = require('./fixtures/connection');
 
 // create agenda instances
 var jobs = new Agenda({
-  rethinkdb: r,
-  db: {
-    table: 'agendaJobs'
-  }
+  rethinkdb: r
 });
 
 function clearJobs(done) {
@@ -91,7 +88,7 @@ describe('Once', function () {
 
   });
 
-  describe(' schedule just once', function () {
+  describe.skip(' schedule just once', function () {
     this.timeout(40000);
 
     beforeEach(clearJobs);
