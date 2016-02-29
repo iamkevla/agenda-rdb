@@ -26,98 +26,105 @@ describe('Once', function () {
 
 
   describe(' run just once', function () {
-    this.timeout(20000);
+    this.timeout(30000);
 
     beforeEach(clearJobs);
 
     it(' should run the job only once', function (done) {
       var startCounter = 0;
 
-      jobs.define('lock job', {
+      jobs.define('runonce', {
         lockLifetime: 50
       }, function (job, cb) {
         startCounter++;
       });
 
-      jobs.every('00 30 08 * * 2-6', 'lock job');
+      jobs.every('00 30 08 * * 2-6', 'runonce');
       jobs.start();
 
       setTimeout(function () {
-        jobs.jobs({name: 'lock job'}, function(err, job) {
+        jobs.jobs({ name: 'runonce' }, function (err, job) {
           job[0].run();
         })
       }, 10);
 
       setTimeout(function () {
-        expect(startCounter).to.be(1);
-        jobs.stop(done);
-      }, 10000);
+        jobs.stop(function () {
+          expect(startCounter).to.be(1);
+          done();
+        });
+      }, 28000);
 
     });
   });
-  
+
   describe(' now just once', function () {
-    this.timeout(20000);
+    this.timeout(30000);
 
     beforeEach(clearJobs);
 
     it(' should schedule the job only once', function (done) {
       var startCounter = 0;
 
-      jobs.define('lock job', {
+      jobs.define('nowonce', {
         lockLifetime: 50
       }, function (job, cb) {
         startCounter++;
       });
-      
+
       jobs.maxConcurrency(1);
-      jobs.every('00 30 08 * * 2-6', 'lock job');
+      jobs.every('00 30 08 * * 2-6', 'nowonce');
       jobs.start();
 
       setTimeout(function () {
-        jobs.now('lock job', '');
+        jobs.now('nowonce', '');
       }, 10);
 
       setTimeout(function () {
-        expect(startCounter).to.be(1);
-        jobs.stop(done);
-      }, 15000);
-
-    });
-    
-  });
-    
-    describe.skip(' schedule just once', function () {
-      this.timeout(20000);
-
-      beforeEach(clearJobs);
-
-      it(' should schedule the job only once', function (done) {
-        var startCounter = 0;
-
-        jobs.define('lock job', {
-          lockLifetime: 50
-        }, function (job, cb) {
-          startCounter++;
-        });
-        
-        jobs.maxConcurrency(1);
-        jobs.every('00 30 08 * * 2-6', 'lock job');
-        jobs.start();
-
-        setTimeout(function () {
-          jobs.schedule('in 2 seconds', 'lock job', '');
-        }, 10);
-
-        setTimeout(function () {
+        jobs.stop(function () {
           expect(startCounter).to.be(1);
-          jobs.stop(done);
-        }, 15000);
+          done();
+        });
+      }, 28000);
 
     });
-    
-    
+
   });
-  
+
+  describe(' schedule just once', function () {
+    this.timeout(40000);
+
+    beforeEach(clearJobs);
+
+    it(' should schedule the job only once', function (done) {
+      var startCounter = 0;
+
+      jobs.define('scheduleonce', {
+        lockLifetime: 50
+      }, function (job, cb) {
+        startCounter++;
+      });
+
+      jobs.maxConcurrency(1);
+      jobs.every('00 30 08 * * 2-6', 'scheduleonce');
+      jobs.start();
+
+      setTimeout(function () {
+        jobs.schedule('in 10 seconds', 'scheduleonce', '');
+      }, 10);
+
+      setTimeout(function () {
+        jobs.stop(function () {
+          expect(startCounter).to.be(1);
+          done();
+        });
+
+      }, 39000);
+
+    });
+
+
+  });
+
 
 });
