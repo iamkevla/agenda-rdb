@@ -66,14 +66,17 @@ describe('Once', function () {
 
     it(' should schedule the job only once', function (done) {
       var startCounter = 0;
+      
+      jobs.purge();
+      jobs.lockLimit(1);
+      jobs.defaultLockLimit(4000);
 
       jobs.define('nowonce', {}, function (job, cb) {
         startCounter++;
         cb();
       });
       
-      jobs.lockLimit(1);
-      jobs.defaultLockLimit(4000);
+
       jobs.every('00 30 08 * * 2-6', 'nowonce');
       jobs.start();
 
@@ -92,21 +95,23 @@ describe('Once', function () {
 
   });
 
-  describe.only(' schedule just once', function () {
+  describe(' schedule just once', function () {
     this.timeout(20000);
 
     before(function(done){clearJobs(done);});
 
     it(' should schedule the job only once', function (done) {
       var startCounter = 0;
+      
+      jobs.purge();
+      jobs.lockLimit(1);
+      jobs.defaultLockLimit(10000);
 
       jobs.define('scheduleonce', {}, function (job, cb) {
         startCounter++;
         cb();
       });
       
-      jobs.lockLimit(1);
-      jobs.defaultLockLimit(20000);
       jobs.every('00 30 08 * * 2-6', 'scheduleonce');
       jobs.start();
 
