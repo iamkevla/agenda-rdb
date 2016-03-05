@@ -6,11 +6,6 @@ var expect = require('expect.js'),
 var r = require('./fixtures/connection');
 
 
-// create agenda instances
-var jobs = new Agenda({
-  rethinkdb: r
-});
-
 function clearJobs(done) {
   r.table('agendaJobs').delete().run(done);
 }
@@ -20,29 +15,38 @@ var jobTimeout = process.env.TRAVIS ? 1500 : 300;
 
 
 describe('Once', function () {
+  
+  var jobs;
+  
+  before(function(done){
+    jobs = new Agenda({
+      rethinkdb: r
+    }, done);
+  });
 
 
   describe(' run just once', function () {
-    this.timeout(30000);
+    this.timeout(20000);
 
-    beforeEach(clearJobs);
+    before(function(done){clearJobs(done);});
 
     it(' should run the job only once', function (done) {
       var startCounter = 0;
 
-      jobs.define('runonce', {
-        lockLifetime: 50
-      }, function (job, cb) {
+      jobs.define('runonce', {}, function (job, cb) {
         startCounter++;
+        cb();
       });
 
+      jobs.lockLimit(1);
+      jobs.defaultLockLimit(4000);
       jobs.every('00 30 08 * * 2-6', 'runonce');
       jobs.start();
 
       setTimeout(function () {
         jobs.jobs({ name: 'runonce' }, function (err, job) {
           job[0].run();
-        })
+        });
       }, 10);
 
       setTimeout(function () {
@@ -50,26 +54,26 @@ describe('Once', function () {
           expect(startCounter).to.be(1);
           done();
         });
-      }, 28000);
+      }, 18000);
 
     });
   });
 
   describe(' now just once', function () {
-    this.timeout(30000);
+    this.timeout(20000);
 
-    beforeEach(clearJobs);
+    before(function(done){clearJobs(done);});
 
     it(' should schedule the job only once', function (done) {
       var startCounter = 0;
 
-      jobs.define('nowonce', {
-        lockLifetime: 50
-      }, function (job, cb) {
+      jobs.define('nowonce', {}, function (job, cb) {
         startCounter++;
+        cb();
       });
-
-      jobs.maxConcurrency(1);
+      
+      jobs.lockLimit(1);
+      jobs.defaultLockLimit(4000);
       jobs.every('00 30 08 * * 2-6', 'nowonce');
       jobs.start();
 
@@ -82,32 +86,32 @@ describe('Once', function () {
           expect(startCounter).to.be(1);
           done();
         });
-      }, 28000);
+      }, 18000);
 
     });
 
   });
 
-  describe.skip(' schedule just once', function () {
-    this.timeout(40000);
+  describe.only(' schedule just once', function () {
+    this.timeout(20000);
 
-    beforeEach(clearJobs);
+    before(function(done){clearJobs(done);});
 
     it(' should schedule the job only once', function (done) {
       var startCounter = 0;
 
-      jobs.define('scheduleonce', {
-        lockLifetime: 50
-      }, function (job, cb) {
+      jobs.define('scheduleonce', {}, function (job, cb) {
         startCounter++;
+        cb();
       });
-
-      jobs.maxConcurrency(1);
+      
+      jobs.lockLimit(1);
+      jobs.defaultLockLimit(20000);
       jobs.every('00 30 08 * * 2-6', 'scheduleonce');
       jobs.start();
 
       setTimeout(function () {
-        jobs.schedule('in 10 seconds', 'scheduleonce', '');
+        jobs.schedule(new Date(), 'scheduleonce', '');
       }, 10);
 
       setTimeout(function () {
@@ -116,7 +120,7 @@ describe('Once', function () {
           done();
         });
 
-      }, 39000);
+      }, 18000);
 
     });
 
