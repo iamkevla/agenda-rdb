@@ -67,10 +67,10 @@ describe('computeRunAt', function() {
             expect(job.computeNextRunAt()).to.be(job);
         });
 
-        it('sets to undefined if no repeat at', function() {
+        it('sets to null if no repeat at', function() {
             job.attrs.repeatAt = null;
             job.computeNextRunAt();
-            expect(job.attrs.nextRunAt).to.be(undefined);
+            expect(job.attrs.nextRunAt).to.be(null);
         });
 
         it('it understands repeatAt times', function() {
@@ -84,10 +84,10 @@ describe('computeRunAt', function() {
             expect(job.attrs.nextRunAt.getMinutes()).to.be(d.getMinutes());
         });
 
-        it('sets to undefined if no repeat interval', function() {
+        it('sets to null if no repeat interval', function() {
             job.attrs.repeatInterval = null;
             job.computeNextRunAt();
-            expect(job.attrs.nextRunAt).to.be(undefined);
+            expect(job.attrs.nextRunAt).to.be(null);
         });
 
         it('it understands human intervals', function() {
@@ -117,8 +117,8 @@ describe('computeRunAt', function() {
                 } catch (e) {}
             });
 
-            it('sets nextRunAt to undefined', function() {
-                expect(job.attrs.nextRunAt).to.be(undefined);
+            it('sets nextRunAt to null', function() {
+                expect(job.attrs.nextRunAt).to.be(null);
             });
 
             it('fails the job', function() {
@@ -134,8 +134,8 @@ describe('computeRunAt', function() {
                 } catch (e) {}
             });
 
-            it('sets nextRunAt to undefined', function() {
-                expect(job.attrs.nextRunAt).to.be(undefined);
+            it('sets nextRunAt to null', function() {
+                expect(job.attrs.nextRunAt).to.be(null);
             });
 
             it('fails the job', function() {

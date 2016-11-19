@@ -38,8 +38,8 @@ describe('Once', function () {
         cb();
       });
 
-      jobs.lockLimit(1);
-      jobs.defaultLockLimit(4000);
+      //jobs.lockLimit(1);
+      //jobs.defaultLockLimit(4000);
       jobs.every('00 30 08 * * 2-6', 'runonce');
       jobs.start();
 
@@ -68,8 +68,8 @@ describe('Once', function () {
       var startCounter = 0;
       
       jobs.purge();
-      jobs.lockLimit(1);
-      jobs.defaultLockLimit(4000);
+      //jobs.lockLimit(1);
+      //jobs.defaultLockLimit(4000);
 
       jobs.define('nowonce', {}, function (job, cb) {
         startCounter++;
@@ -104,8 +104,8 @@ describe('Once', function () {
       var startCounter = 0;
       
       jobs.purge();
-      jobs.lockLimit(1);
-      jobs.defaultLockLimit(10000);
+      //jobs.lockLimit(1);
+      //jobs.defaultLockLimit(10000);
 
       jobs.define('scheduleonce', {}, function (job, cb) {
         startCounter++;
